@@ -1,0 +1,184 @@
+I ran these commands to setup the lab components successfully:
+#+BEGIN_SRC bash    
+bundle install 
+bundle exec rake db:migrate db:seed
+#+END_SRC
+
+Related output:
+#+BEGIN_SRC bash
+samuelbanya@Samuels-MBP ~/hub/Development/code/phase-3/phase-3-building-sinatra-appl
+ications $ bundle install
+Fetching gem metadata from https://rubygems.org/.............
+Resolving dependencies...
+Using rake 13.0.6
+Using concurrent-ruby 1.1.9
+Using minitest 5.14.4
+Using zeitwerk 2.4.2
+Using bundler 2.2.23
+Using rack 2.2.3
+Using require_all 3.0.0
+Fetching rspec-support 3.10.2
+Fetching diff-lcs 1.4.4
+Using coderay 1.1.3
+Using tilt 2.0.10
+Using sqlite3 1.4.2
+Using i18n 1.8.10
+Using tzinfo 2.0.4
+Fetching ffi 1.15.3
+Fetching rb-fsevent 0.11.0
+Using method_source 1.0.0
+Fetching database_cleaner-core 2.0.1
+Using ruby2_keywords 0.0.5
+Fetching faker 2.18.0
+Using rack-protection 2.1.0
+Using rack-test 1.1.0
+Using activesupport 6.1.4
+Using activemodel 6.1.4
+Using mustermann 1.1.1
+Using pry 0.14.1
+Using activerecord 6.1.4
+Using sinatra 2.1.0
+Using sinatra-activerecord 2.0.23
+Installing diff-lcs 1.4.4
+Installing database_cleaner-core 2.0.1
+Installing rspec-support 3.10.2
+Installing rb-fsevent 0.11.0
+Fetching database_cleaner-active_record 2.0.1
+Fetching rspec-core 3.10.1
+Fetching rspec-expectations 3.10.1
+Fetching rspec-mocks 3.10.2
+Installing ffi 1.15.3 with native extensions
+Installing database_cleaner-active_record 2.0.1
+Installing faker 2.18.0
+Installing rspec-mocks 3.10.2
+Installing rspec-expectations 3.10.1
+Installing rspec-core 3.10.1
+Fetching database_cleaner 2.0.1
+Installing database_cleaner 2.0.1
+Fetching rspec 3.10.0
+Installing rspec 3.10.0
+Fetching rb-inotify 0.10.1
+Installing rb-inotify 0.10.1
+Fetching listen 3.5.1
+Installing listen 3.5.1
+Fetching rerun 0.13.1
+Installing rerun 0.13.1
+Bundle complete! 12 Gemfile dependencies, 38 gems now installed.
+Use `bundle info [gemname]` to see where a bundled gem is installed.
+samuelbanya@Samuels-MBP ~/hub/Development/code/phase-3/phase-3-building-sinatra-appl
+ications $ bundle exec rake db:migrate db:seed
+== 20210719113216 CreateGames: migrating ======================================
+-- create_table(:games)
+   -> 0.0008s
+== 20210719113216 CreateGames: migrated (0.0008s) =============================
+
+== 20210719113221 CreateReviews: migrating ====================================
+-- create_table(:reviews)
+   -> 0.0007s
+== 20210719113221 CreateReviews: migrated (0.0008s) ===========================
+
+== 20210719142820 CreateUsers: migrating ======================================
+-- create_table(:users)
+   -> 0.0007s
+== 20210719142820 CreateUsers: migrated (0.0008s) =============================
+
+== 20210719142825 AddUserIdToReviews: migrating ===============================
+-- add_column(:reviews, :user_id, :integer)
+   -> 0.0009s
+== 20210719142825 AddUserIdToReviews: migrated (0.0021s) ======================
+
+🌱 Seeding data...
+🌱 Done seeding!
+#+END_SRC
+
+Breakdown Of Relationships Of Various File Present In Project:
+- app/models: Our Active Record models. Responsible for code that accesses and updates data in our database using classes that inherit from ActiveRecord::Base.
+- config: Code in this folder is responsible for our environment setup, like requiring files/gems, and establishing a connection to the database.
+- db/migrate: Our Active Record migrations. Responsible for creating and altering the structure of the database (making new tables, adding columns to existing tables, etc).
+- db/seeds.rb: Lets us easily add sample data to the database.
+- spec: Our RSpec tests.
+- Gemfile: Lists all the gems our application depends on.
+- Rakefile: Code for common tasks that we can easily run from the command line, like rake console.
+
+I created a new file in 'app/controllers/application_controller.rb' with the following contents:
+#+BEGIN_SRC ruby
+# app/controllers/application_controller.rb
+class ApplicationController < Sinatra::Base
+
+  get '/' do
+    '<h2>Hello <em>World</em>!</h2>'
+  end
+
+end
+#+END_SRC
+
+I then added the following portion to the "config.ru" file:
+#+BEGIN_SRC ruby
+# NOTE: This is the previous code before refactoring:
+# require 'sinatra'
+
+# class App < Sinatra::Base
+
+#   get '/' do
+#     "<h2>Hello <em>World</em>!</h2>"
+#   end
+  
+# end
+
+# run App
+require_relative "./config/environment"
+
+run ApplicationController
+#+END_SRC
+
+I then ran the application with the 'rackup config.ru' command:
+#+BEGIN_SRC bash
+samuelbanya@Samuels-MBP ~/hub/Development/code/phase-3/phase-3-building-sinatra-appl
+ications $ rackup config.ru
+[2022-09-16 14:05:35] INFO  WEBrick 1.6.1
+[2022-09-16 14:05:35] INFO  ruby 2.7.4 (2021-07-07) [x86_64-darwin21]
+[2022-09-16 14:05:35] INFO  WEBrick::HTTPServer#start: pid=11664 port=9292
+#+END_SRC
+
+More Related Notes On MVC:
+- Models: responsible for working with the database
+- Views: responsible for what the user sees on the webpage (typically, views are some form of HTML template)
+- Controllers: responsible for receiving a request and using the model to generate data needed for the view
+
+I then ran the development server with the 'rerun' Ruby gem's '-b' or 'background' option which acts like the 'Webpack' reload function from React:
+#+BEGIN_SRC ruby
+bundle exec rerun -b 'rackup config.ru'
+#+END_SRC
+
+Related output:
+#+BEGIN_SRC bash
+samuelbanya@Samuels-MBP ~/hub/Development/code/phase-3/phase-3-buil
+ding-sinatra-applications $ bundle exec rerun -b 'rackup config.ru' 
+14:13:56 [rerun] Phase-3-building-sinatra-applications launched
+14:13:56 [rerun] Rerun (12436) running Phase-3-building-sinatra-applications (12443)
+[2022-09-16 14:13:57] INFO  WEBrick 1.6.1
+[2022-09-16 14:13:57] INFO  ruby 2.7.4 (2021-07-07) [x86_64-darwin21]
+[2022-09-16 14:13:57] INFO  WEBrick::HTTPServer#start: pid=12443 port=9292
+14:13:58 [rerun] Watching . for **/*.{rb,js,coffee,css,scss,sass,erb,html,haml,ru,yml,slim,md,feature,c,h} with Darwin adapter
+#+END_SRC
+
+I then added the following task to the 'Rakefile':
+#+BEGIN_SRC ruby
+desc "Start the server"
+task :server do
+  exec "rerun -b 'rackup config.ru'"
+end
+#+END_SRC
+
+I then was able to just run the following 'bundle exec rake server' command so that it would run "rerun -b 'rackup config.ru'" in the background automatically for me:
+#+BEGIN_SRC bash
+samuelbanya@Samuels-MBP ~/hub/Development/code/phase-3/phase-3-buil
+ding-sinatra-applications $ bundle exec rake server
+
+14:18:20 [rerun] Phase-3-building-sinatra-applications launched
+14:18:20 [rerun] Rerun (12720) running Phase-3-building-sinatra-applications (12733)
+[2022-09-16 14:18:21] INFO  WEBrick 1.6.1
+[2022-09-16 14:18:21] INFO  ruby 2.7.4 (2021-07-07) [x86_64-darwin21]
+[2022-09-16 14:18:21] INFO  WEBrick::HTTPServer#start: pid=12733 port=9292
+14:18:23 [rerun] Watching . for **/*.{rb,js,coffee,css,scss,sass,erb,html,haml,ru,yml,slim,md,feature,c,h} with Darwin adapter
+#+END_SRC
